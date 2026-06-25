@@ -2,6 +2,10 @@
 <html lang="bg">
 <head>
 <meta charset="utf-8">
+<meta name="theme-color" content="#050910">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>Bakshish – Шофьор</title>
 <style>
@@ -309,26 +313,47 @@ select.finp{cursor:pointer}
 
 <!-- ═══ MAP/HEATMAP PAGE ═══ -->
 <div class="pg" id="pg-map" style="overflow-y:auto">
-  <div id="map"></div>
-  <div class="msheet">
-    <div class="mhandle" onclick="toggleMSheet()"></div>
-    <div class="hlegend">
-      <span class="hlbl" style="background:rgba(239,68,68,.3);color:#ff7777">🔥 ПИК</span>
-      <span class="hlbl" style="background:rgba(249,115,22,.3);color:#ffaa55">▲ Висок</span>
-      <span class="hlbl" style="background:rgba(245,158,11,.3);color:#ffd060">Среден</span>
-      <span class="hlbl" style="background:rgba(34,197,94,.3);color:#55ee88">Нормален</span>
-      <span class="hlbl" style="background:rgba(88,166,255,.2);color:#58a6ff">● Ти</span>
-      <span class="hlbl" style="background:rgba(245,197,24,.15);color:#f5c518">🚕 Колеги</span>
-    </div>
-    <div style="padding:0 10px 8px;display:flex;gap:7px;align-items:center">
-      <div style="font-size:12px;color:var(--mu)">Час:</div>
+  <div class="scroll" style="padding:8px">
+
+    <!-- Hour control -->
+    <div style="display:flex;align-items:center;gap:8px;padding:6px 0 8px">
+      <span style="font-size:12px;color:var(--mu)">🕐</span>
       <input type="range" id="hrSlider" min="0" max="23" step="1" style="flex:1;accent-color:var(--y)" oninput="updHeatmap()">
-      <div style="font-size:13px;font-weight:800;color:var(--y);min-width:40px" id="hrLabel">–</div>
-      <button class="btn-sm btg btn" onclick="setAutoHour()" style="padding:5px 10px;font-size:11px;margin:0">🕐 Сега</button>
+      <span style="font-size:14px;font-weight:900;color:var(--y);min-width:42px" id="hrLabel">–</span>
+      <button onclick="setAutoHour()" style="background:var(--s3);border:1px solid var(--brd);border-radius:7px;padding:4px 9px;font-size:11px;color:var(--mu);cursor:pointer;white-space:nowrap">🔄 Сега</button>
     </div>
-    <div style="padding:0 10px 10px">
-      <div id="topZone" class="notice nok" style="font-size:12px"></div>
+
+    <!-- SVG MAP -->
+    <div style="position:relative;background:var(--s2);border:1px solid var(--brd);border-radius:12px;overflow:hidden">
+      <svg id="heatSvg" viewBox="0 0 400 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block"></svg>
+      <!-- Overlay label -->
+      <div style="position:absolute;top:8px;left:8px;font-size:10px;font-weight:700;color:rgba(255,255,255,.4);pointer-events:none">СОФИЯ</div>
     </div>
+
+    <!-- Legend -->
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:7px">
+      <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(239,68,68,.3);color:#ff7777">🔥 ПИК</span>
+      <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(249,115,22,.3);color:#ffaa55">▲ Висок</span>
+      <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(245,158,11,.3);color:#ffd060">Среден</span>
+      <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(34,197,94,.3);color:#55ee88">Нормален</span>
+      <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(245,197,24,.2);color:#f5c518">🚕 Колеги</span>
+    </div>
+
+    <!-- Top zone recommendation -->
+    <div id="topZone" class="notice nok" style="margin-top:8px;font-size:13px"></div>
+
+    <!-- HINTS from SOF -->
+    <div class="sec" style="margin-top:8px">
+      <div class="sec-t">💡 Hints за часа</div>
+      <div id="hintsBox" style="display:flex;flex-direction:column;gap:6px"></div>
+    </div>
+
+    <!-- Zone list -->
+    <div class="sec" style="margin-top:0">
+      <div class="sec-t">📍 Зони по търсене</div>
+      <div id="zoneList" style="display:flex;flex-direction:column;gap:4px"></div>
+    </div>
+
   </div>
 </div>
 
@@ -558,66 +583,11 @@ const JSON_URL='https://raw.githubusercontent.com/emillion-lab/FishBakshish/main
 // Vehicle list for verification (loaded from GitHub)
 let VEHICLES=[];
 
-// SOF Demand Zones (from BakshishApp)
-const ZONES=[
-  {id:'airport',name:'✈️ Летище Sofia',lat:42.6950,lng:23.4083,r:600,type:'airport'},
-  {id:'bpark',name:'🏢 Business Park',lat:42.6292,lng:23.3731,r:380,type:'office'},
-  {id:'serdika',name:'🛍 Мол Сердика',lat:42.6976,lng:23.3243,r:240,type:'mall'},
-  {id:'paradise',name:'🛍 Paradise Center',lat:42.6578,lng:23.3144,r:290,type:'mall'},
-  {id:'the_mall',name:'🛍 The Mall',lat:42.6605,lng:23.3822,r:290,type:'mall'},
-  {id:'ring_mall',name:'🛍 Ring Mall / IKEA',lat:42.6246,lng:23.3519,r:340,type:'mall'},
-  {id:'hotels_ctr',name:'🏨 Хотели Център',lat:42.6953,lng:23.3242,r:280,type:'hotel'},
-  {id:'cjp',name:'🚂 Централна гара',lat:42.7121,lng:23.3210,r:240,type:'transit'},
-  {id:'cab_north',name:'🚌 Автогара Север',lat:42.7103,lng:23.3233,r:200,type:'transit'},
-  {id:'ag_yug',name:'🚌 Автогара Юг',lat:42.6784,lng:23.3405,r:190,type:'transit'},
-  {id:'arena',name:'🎸 Арена 8888',lat:42.6711,lng:23.3692,r:290,type:'venue'},
-  {id:'ndk',name:'🎭 НДК',lat:42.6855,lng:23.3188,r:260,type:'venue'},
-  {id:'pirogov',name:'🏥 Пирогов',lat:42.6933,lng:23.3177,r:190,type:'hospital'},
-  {id:'alexand',name:'🏥 Александровска',lat:42.6958,lng:23.3093,r:190,type:'hospital'},
-  {id:'unss',name:'🎓 УНСС',lat:42.6796,lng:23.3127,r:240,type:'university'},
-  {id:'studentski',name:'🎓 Студентски град',lat:42.6475,lng:23.3530,r:380,type:'university'},
-  {id:'mall_sofia',name:'🛍 Mall of Sofia',lat:42.6981,lng:23.3086,r:210,type:'mall'},
-  {id:'vitosha_bar',name:'🍷 Бул.Витоша',lat:42.6890,lng:23.3220,r:250,type:'nightlife'},
-  {id:'nat_theatre',name:'🎭 Народен театър',lat:42.6951,lng:23.3297,r:180,type:'theatre'},
-  {id:'opera',name:'🎶 Национална опера',lat:42.6946,lng:23.3229,r:180,type:'theatre'},
-  {id:'manast',name:'🏘 Ман.ливади',lat:42.6637,lng:23.2910,r:380,type:'residential_lux'},
-  {id:'boyana',name:'🌳 Бояна/Драгалевци',lat:42.6348,lng:23.2889,r:430,type:'residential_lux'},
-  {id:'lyulin',name:'🏘 жк Люлин',lat:42.7050,lng:23.2650,r:400,type:'residential'},
-  {id:'mladost',name:'🏘 жк Младост',lat:42.6500,lng:23.3700,r:350,type:'residential'},
-  {id:'nadezhda',name:'🏘 жк Надежда',lat:42.7200,lng:23.2900,r:350,type:'residential'},
-  {id:'k_borovo',name:'жк Борово',lat:42.6710,lng:23.2960,r:300,type:'karyk'},
-  {id:'k_krasno',name:'жк Красно село',lat:42.6890,lng:23.2990,r:300,type:'karyk'},
-  {id:'center_bars',name:'🍺 Барове Центъра',lat:42.6960,lng:23.3310,r:200,type:'nightlife'},
-  {id:'su',name:'🎓 СУ',lat:42.6943,lng:23.3318,r:200,type:'university'},
-];
-const BASE={airport:1.4,bpark:0.5,serdika:0.8,paradise:0.7,the_mall:0.6,ring_mall:0.6,hotels_ctr:0.9,cjp:0.9,cab_north:0.8,ag_yug:0.7,arena:0.3,ndk:0.7,pirogov:1.0,alexand:0.9,unss:0.5,studentski:0.6,mall_sofia:0.6,vitosha_bar:0.6,nat_theatre:0.3,opera:0.3,manast:0.5,boyana:0.4,lyulin:0.5,mladost:0.5,nadezhda:0.4,k_borovo:0.3,k_krasno:0.3,center_bars:0.5,su:0.5};
-const EVENTS=[
-  {zone:'bpark',name:'Business Park – изход',endHour:17.5,boost:3.0,repeat:'mon-fri'},
-  {zone:'serdika',name:'Сердика – затваряне',endHour:21.0,boost:2.0,repeat:'daily'},
-  {zone:'paradise',name:'Paradise – затваряне',endHour:21.5,boost:2.2,repeat:'daily'},
-  {zone:'hotels_ctr',name:'Late checkout',endHour:13.0,boost:1.8,repeat:'daily'},
-  {zone:'hotels_ctr',name:'Check-in wave',endHour:16.0,boost:1.5,repeat:'daily'},
-  {zone:'arena',name:'SCORPIONS – Coming Home',endHour:22.5,boost:3.5,date:'2026-06-27'},
-  {zone:'ndk',name:'НДК – концерт',endHour:22.0,boost:2.2,repeat:'fri-sat'},
-  {zone:'cjp',name:'Влак – пристигане',endHour:18.5,boost:2.2,repeat:'daily'},
-  {zone:'ag_yug',name:'Автобуси от Пловдив',endHour:19.5,boost:2.0,repeat:'daily'},
-  {zone:'pirogov',name:'Пирогов – прегледи',endHour:9.0,boost:1.4,repeat:'daily'},
-  {zone:'unss',name:'УНСС – края на лекции',endHour:13.5,boost:2.0,repeat:'mon-fri'},
-  {zone:'studentski',name:'Студентски – вечер',endHour:19.0,boost:2.5,repeat:'mon-fri'},
-  {zone:'manast',name:'Ман.ливади – сутрин',endHour:8.5,boost:2.0,repeat:'mon-fri'},
-  {zone:'vitosha_bar',name:'Витоша – след вечеря',endHour:22.0,boost:2.2,repeat:'daily'},
-  {zone:'vitosha_bar',name:'Витоша – след клуб',endHour:24.0,boost:2.5,repeat:'fri-sat'},
-  {zone:'nat_theatre',name:'Народен театър – спектакъл',endHour:21.5,boost:2.5,repeat:'tue-sat'},
-  {zone:'opera',name:'Опера – край',endHour:22.0,boost:2.5,repeat:'tue-sun'},
-  {zone:'center_bars',name:'Центъра – след клуб',endHour:24.0,boost:2.2,repeat:'fri-sat'},
-];
-
 // ═══ STATE ═══
 let isOnline=false,verStep=1,selVehicle=null,myProfile={};
 let curRide=null,meterIv=null,rideSecs=0,rideKm=0,rideWait=0;
 let totalEur=0,ridesCount=0,kmTotal=0,weekExtra=0;
 let hist=[],orderTmr=null,orderSecs=0,pendingOrder=null;
-let map,zoneCircles=[],myMarker=null,colleagueMarkers=[];
 let autoHour=true;
 let profileToggles={silent:false,toosilent:false,conspiracy:false,truthseeker:false,nochalgaplease:false,nosmoker:false,nofootball:false,nomaksim:false,fast:false,bigtrunk:false,ventseats:false,backscreen:false,usb:true};
 let quickOpts={sm:false,ac:true,ch:false,pe:false,ca:false,usb:true};
@@ -645,7 +615,6 @@ window.addEventListener('load',function(){
   updStats();
   loadVehicles();
   setAutoHour();
-  loadLeaflet(initMap);
 });
 
 async function loadVehicles(){
@@ -678,7 +647,7 @@ function goTab(tab){
   document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('on');});
   document.getElementById('pg-'+tab).classList.add('on');
   document.getElementById('t-'+tab).classList.add('on');
-  if(tab==='map'&&map)setTimeout(function(){map.invalidateSize();updHeatmap();},100);
+  if(tab==='map')setTimeout(updHeatmap,50);
 }
 
 // ═══ ONLINE TOGGLE ═══
@@ -790,6 +759,12 @@ function selectCar(plate){
   selVehicle=v;
   document.querySelectorAll('.car-result').forEach(function(el){el.classList.toggle('sel',el.querySelector('.plate').textContent===plate);});
   document.getElementById('selCarInfo').innerHTML='✅ Избрана кола: <b>'+esc(v.p)+'</b> – '+esc(v.m)+' ('+v.y+')';
+  // Pre-fill name from registry if available
+  const nameInp=document.getElementById('pName');
+  if(v.d&&!nameInp.value){
+    nameInp.value=v.d;
+    nameInp.placeholder=v.d;
+  }
   goVerifyStep(2);
 }
 function triggerPhoto(id){document.getElementById(id).click();}
@@ -805,26 +780,41 @@ function previewPhoto(inputId,previewId,boxId){
   reader.readAsDataURL(file);
 }
 function submitVerify(){
-  // Simulate verification
-  showNotif('📤 Изпращане за верификация…');
+  const v=selVehicle;
+  if(!v)return;
+  // Name: custom > registry driver > operator name (stripped)
+  const customName=document.getElementById('pName').value.trim();
+  const registryName=v.d||'';
+  const opShort=(v.op||'').replace(/ЕООД|АД|ООД|ДЗЗД|ТРАНС|ТАКСИ/g,'').trim().split(' ').slice(0,2).join(' ');
+  const displayName=customName||registryName||opShort||'Шофьор';
+
+  showNotif('📤 Верификация…');
   setTimeout(function(){
     goVerifyStep(3);
-    // Update ID card
-    const v=selVehicle;
+    const initials=(function(){
+      const parts=displayName.split(' ').filter(Boolean);
+      if(parts.length>=2) return parts[0][0]+parts[1][0];
+      return parts[0]?parts[0].slice(0,2):'ШФ';
+    })();
     document.getElementById('idContent').innerHTML=
       '<div class="notice nok">✅ Верифициран шофьор</div>'+
       '<div style="margin-top:8px;display:flex;gap:10px;align-items:center">'+
-        '<div style="font-size:32px">'+AVATARS[Math.floor(Math.random()*AVATARS.length)]+'</div>'+
-        '<div><div style="font-size:15px;font-weight:900">'+(document.getElementById('pName').value||v.d||'Шофьор')+'</div>'+
-        '<div style="font-size:12px;color:var(--mu)">'+esc(v.m)+' ('+v.y+')</div>'+
-        '<div class="plate" style="margin-top:4px">'+esc(v.p)+'</div>'+
-        '<div style="font-size:11px;color:var(--cy);margin-top:3px">🏢 '+esc(v.op)+'</div></div>'+
+        '<div style="width:48px;height:48px;border-radius:50%;background:var(--y);color:#000;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;flex-shrink:0">'+esc(initials)+'</div>'+
+        '<div>'+
+          '<div style="font-size:16px;font-weight:900;letter-spacing:-.3px">'+esc(displayName)+'</div>'+
+          '<div style="font-size:12px;color:var(--mu)">'+esc(v.m)+' ('+v.y+')</div>'+
+          '<div class="plate" style="margin-top:4px;font-size:12px">'+esc(v.p)+'</div>'+
+          '<div style="font-size:11px;color:var(--cy);margin-top:3px">🏢 '+esc(v.op)+'</div>'+
+        '</div>'+
       '</div>';
     document.getElementById('verifiedCard').innerHTML=
-      '<div style="font-size:13px;margin-top:6px"><b>'+esc(v.p)+'</b> – '+esc(v.m)+' ('+v.y+')<br>'+
-      '<span style="color:var(--mu)">Лиц. № '+esc(v.l)+'</span></div>';
+      '<div style="font-size:13px;margin-top:6px">'+
+        '<b>'+esc(v.p)+'</b> – '+esc(v.m)+' ('+v.y+')<br>'+
+        (registryName?'<span style="color:var(--mu)">👤 '+esc(registryName)+'</span><br>':'')+
+        '<span style="color:var(--mu)">Лиц. № '+esc(v.l)+'</span>'+
+      '</div>';
     showNotif('✅ Верифициран! Можеш да се включиш онлайн.');
-  },2000);
+  },1500);
 }
 
 const AVATARS=['👨','👩','👨🏽','👩🏽','👨🏿','👴','🧔','👱','🧑'];
@@ -921,30 +911,84 @@ function renderHist(){
   }).join(''):'<div style="font-size:13px;color:var(--mu);text-align:center;padding:20px">Все още няма курсове.</div>';
 }
 
-// ═══ HEATMAP / MAP ═══
-function loadLeaflet(cb){
-  if(window.L){cb();return;}
-  const lk=document.createElement('link');lk.rel='stylesheet';lk.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';document.head.appendChild(lk);
-  const s=document.createElement('script');s.src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-  s.onload=function(){setTimeout(cb,100);};document.head.appendChild(s);
-}
-function initMap(){
-  const el=document.getElementById('map');
-  if(!el||el.offsetHeight===0){setTimeout(initMap,200);return;}
-  map=L.map('map',{zoomControl:false,attributionControl:false}).setView(SOFIA,12);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19,subdomains:'abcd'}).addTo(map);
-  L.control.zoom({position:'topright'}).addTo(map);
-  // My position marker
-  const ui=L.divIcon({className:'',html:'<div style="width:16px;height:16px;background:var(--y);border:3px solid #000;border-radius:50%;box-shadow:0 0 0 6px rgba(245,197,24,.3)"></div>',iconSize:[16,16],iconAnchor:[8,8]});
-  myMarker=L.marker(SOFIA,{icon:ui,zIndexOffset:1000}).addTo(map).bindPopup('<b style="color:var(--y)">🚕 Вие</b>');
-  setTimeout(function(){map.invalidateSize();updHeatmap();},300);
-  // Try geolocation
-  if(navigator.geolocation) navigator.geolocation.getCurrentPosition(function(p){
-    const pos=[p.coords.latitude,p.coords.longitude];
-    myMarker.setLatLng(pos);map.setView(pos,13);
-  });
-}
-function updMyMarker(){if(myMarker)myMarker.setLatLng(SOFIA);}
+// ═══ SVG HEATMAP ═══(lat){ return Math.round((42.74-lat)/(42.74-42.60)*330+15); }
+function lngToX(lng){ return Math.round((lng-23.25)/(23.44-23.25)*380+10); }
+
+const ZONES=[
+  {id:'airport',     name:'✈️ Летище',         lat:42.695,lng:23.408,r:22,type:'airport'},
+  {id:'bpark',       name:'🏢 Business Park',  lat:42.629,lng:23.373,r:14,type:'office'},
+  {id:'capital_fort',name:'🏢 Capital Fort',   lat:42.646,lng:23.396,r:10,type:'office'},
+  {id:'the_mall',    name:'🛍 The Mall',        lat:42.660,lng:23.382,r:11,type:'mall'},
+  {id:'ring_mall',   name:'🛍 Ring Mall',        lat:42.625,lng:23.352,r:13,type:'mall'},
+  {id:'paradise',    name:'🛍 Paradise',         lat:42.658,lng:23.314,r:11,type:'mall'},
+  {id:'serdika',     name:'🛍 Сердика',          lat:42.698,lng:23.324,r:9, type:'mall'},
+  {id:'mall_sofia',  name:'🛍 Mall of Sofia',    lat:42.698,lng:23.309,r:8, type:'mall'},
+  {id:'hotels_ctr',  name:'🏨 Хотели Центъра',  lat:42.695,lng:23.324,r:10,type:'hotel'},
+  {id:'cjp',         name:'🚂 Централна гара',  lat:42.712,lng:23.321,r:9, type:'transit'},
+  {id:'ag_yug',      name:'🚌 Автогара Юг',     lat:42.678,lng:23.341,r:7, type:'transit'},
+  {id:'arena',       name:'🎸 Арена 8888',       lat:42.671,lng:23.369,r:11,type:'venue'},
+  {id:'ndk',         name:'🎭 НДК',              lat:42.686,lng:23.319,r:10,type:'venue'},
+  {id:'pirogov',     name:'🏥 Пирогов',          lat:42.693,lng:23.318,r:7, type:'hospital'},
+  {id:'alexand',     name:'🏥 Александровска',   lat:42.696,lng:23.309,r:7, type:'hospital'},
+  {id:'unss',        name:'🎓 УНСС',             lat:42.680,lng:23.313,r:9, type:'university'},
+  {id:'studentski',  name:'🎓 Студентски',       lat:42.648,lng:23.353,r:14,type:'university'},
+  {id:'vitosha_bar', name:'🍷 Витоша',           lat:42.689,lng:23.322,r:9, type:'nightlife'},
+  {id:'nat_theatre', name:'🎭 Нар.театър',       lat:42.695,lng:23.330,r:7, type:'theatre'},
+  {id:'opera',       name:'🎶 Опера',            lat:42.695,lng:23.323,r:7, type:'theatre'},
+  {id:'manast',      name:'🏘 Ман.ливади',       lat:42.664,lng:23.291,r:14,type:'residential_lux'},
+  {id:'boyana',      name:'🌳 Бояна',            lat:42.635,lng:23.289,r:16,type:'residential_lux'},
+  {id:'lyulin',      name:'🏘 Люлин',            lat:42.705,lng:23.265,r:16,type:'residential'},
+  {id:'mladost',     name:'🏘 Младост',          lat:42.650,lng:23.370,r:14,type:'residential'},
+  {id:'nadezhda',    name:'🏘 Надежда',          lat:42.720,lng:23.290,r:14,type:'residential'},
+  {id:'center_bars', name:'🍺 Барове Центъра',   lat:42.696,lng:23.331,r:8, type:'nightlife'},
+  {id:'su',          name:'🎓 СУ',               lat:42.694,lng:23.332,r:8, type:'university'},
+  {id:'k_borovo',    name:'жк Борово',           lat:42.671,lng:23.296,r:12,type:'karyk'},
+  {id:'k_krasno',    name:'жк Красно село',      lat:42.689,lng:23.299,r:12,type:'karyk'},
+];
+const BASE={airport:1.4,bpark:0.5,capital_fort:0.4,the_mall:0.6,ring_mall:0.6,paradise:0.7,serdika:0.8,mall_sofia:0.6,hotels_ctr:0.9,cjp:0.9,ag_yug:0.7,arena:0.3,ndk:0.7,pirogov:1.0,alexand:0.9,unss:0.5,studentski:0.6,vitosha_bar:0.6,nat_theatre:0.3,opera:0.3,manast:0.5,boyana:0.4,lyulin:0.5,mladost:0.5,nadezhda:0.4,center_bars:0.5,su:0.5,k_borovo:0.3,k_krasno:0.3};
+const EVENTS=[
+  {zone:'bpark',     name:'Business Park – изход',    endHour:17.5,boost:3.0,repeat:'mon-fri'},
+  {zone:'capital_fort',name:'Capital Fort – изход',   endHour:17.5,boost:2.8,repeat:'mon-fri'},
+  {zone:'serdika',   name:'Мол Сердика – затваряне',  endHour:21.0,boost:2.0,repeat:'daily'},
+  {zone:'paradise',  name:'Paradise – затваряне',      endHour:21.5,boost:2.2,repeat:'daily'},
+  {zone:'the_mall',  name:'The Mall – затваряне',      endHour:21.0,boost:2.0,repeat:'daily'},
+  {zone:'hotels_ctr',name:'Late checkout / трансфери', endHour:13.0,boost:1.8,repeat:'daily'},
+  {zone:'hotels_ctr',name:'Check-in wave',             endHour:16.0,boost:1.5,repeat:'daily'},
+  {zone:'hotels_ctr',name:'Бизнес вечеря',             endHour:21.5,boost:1.6,repeat:'mon-fri'},
+  {zone:'arena',     name:'🎸 SCORPIONS – Coming Home',endHour:22.5,boost:3.5,date:'2026-06-27'},
+  {zone:'ndk',       name:'НДК – концерт',             endHour:22.0,boost:2.2,repeat:'fri-sat'},
+  {zone:'cjp',       name:'Влак – пристигане',         endHour:18.5,boost:2.2,repeat:'daily'},
+  {zone:'ag_yug',    name:'Автобуси от Пловдив',       endHour:19.5,boost:2.0,repeat:'daily'},
+  {zone:'pirogov',   name:'Пирогов – прегледи',        endHour:9.0, boost:1.4,repeat:'daily'},
+  {zone:'unss',      name:'УНСС – края на лекции',     endHour:13.5,boost:2.0,repeat:'mon-fri'},
+  {zone:'studentski',name:'Студентски – вечер',        endHour:19.0,boost:2.5,repeat:'mon-fri'},
+  {zone:'manast',    name:'Ман.ливади – сутрин',       endHour:8.5, boost:2.0,repeat:'mon-fri'},
+  {zone:'vitosha_bar',name:'Витоша – след вечеря',     endHour:22.0,boost:2.2,repeat:'daily'},
+  {zone:'vitosha_bar',name:'Витоша – след клуб',       endHour:24.0,boost:2.5,repeat:'fri-sat'},
+  {zone:'nat_theatre',name:'Народен театър',           endHour:21.5,boost:2.5,repeat:'tue-sat'},
+  {zone:'opera',     name:'Опера – край',              endHour:22.0,boost:2.5,repeat:'tue-sun'},
+  {zone:'center_bars',name:'Центъра – след клуб',      endHour:24.0,boost:2.2,repeat:'fri-sat'},
+  {zone:'lyulin',    name:'Люлин – сутрешно тръгване', endHour:8.0, boost:1.5,repeat:'mon-fri'},
+  {zone:'mladost',   name:'Младост – след работа',     endHour:18.5,boost:1.8,repeat:'mon-fri'},
+  {zone:'airport',   name:'Нощни полети – пристигания',endHour:23.5,boost:1.5,repeat:'daily'},
+  {zone:'airport',   name:'Сутрешни полети',           endHour:7.0, boost:2.0,repeat:'daily'},
+];
+const HOUR_HINTS={
+  6:['☀️ Ранна сутрин — Люлин, Надежда тръгват','✈️ Сутрешни полети от летището'],
+  7:['🏘 Ман.ливади, Бояна — луксозни квартали тръгват','✈️ Пик летище — бизнес пътници'],
+  8:['🏢 Офис пик — Business Park, Capital Fort','🏥 Болници — прегледи започват'],
+  9:['🏢 Офисите приемат — позиционирай се наблизо','🎓 УНСС – студентите пристигат'],
+  12:['🍽 Обяд – центъра е активен','🎓 Студентски – обедна вълна'],
+  13:['🏨 Late checkout – хотелите изпращат гости','🎓 УНСС – следобедни лекции'],
+  16:['🏢 Офиси скоро приключват — позиционирай се наблизо!','🛍 Молове – следобедна вълна'],
+  17:['🔥 ПИК – изход от офисите! Business Park, Capital Fort','🛍 Молове набират скорост'],
+  18:['🚂 Централна гара – вечерни влакове','🎓 УНСС вечерни – студенти'],
+  19:['🎭 Театри и опера скоро свършват','🍽 Вечеря час – Витоша, Лозенец'],
+  20:['🎭 Народен театър, Опера – публиката излиза след ~21:30','🍺 Барове Центъра се активизират'],
+  21:['🛍 Молове затварят – ГОЛЯМА вълна!','🎭 Театрите се изсипват'],
+  22:['🍺 Нощен живот – Витоша, Раковски','🎸 Концерти свършват – Арена 8888'],
+  23:['🌙 Нощна смяна – клубовете са активни','✈️ Нощни пристигания на летището'],
+};
 
 const TODAY2=new Date();
 const todayStr=TODAY2.toISOString().slice(0,10);
@@ -959,12 +1003,12 @@ function dayMatch(ev){
   if(r==='thu-sat')return[4,5,6].includes(todayDay);
   return true;
 }
-function computeScores(hour){
+function computeScores(h){
   const sc={};
   ZONES.forEach(function(z){sc[z.id]=BASE[z.id]||0.3;});
   EVENTS.forEach(function(ev){
     if(!dayMatch(ev))return;
-    const diff=hour-ev.endHour;let f=0;
+    const diff=h-ev.endHour;let f=0;
     if(diff>=-0.75&&diff<=0) f=(diff+0.75)/0.75;
     else if(diff>0&&diff<=1.5) f=1-diff/1.5;
     if(f>0.05) sc[ev.zone]=(sc[ev.zone]||0)+ev.boost*f;
@@ -972,58 +1016,90 @@ function computeScores(hour){
   return sc;
 }
 function demandColor(sc,type){
-  if(type==='hospital') return sc>=1.5?{f:'#ef4444',a:.6,s:'#ff5555',l:'🏥 Активно'}:{f:'#991b1b',a:.35,s:'#cc3333',l:'🏥'};
-  if(type==='karyk') return{f:'#f97316',a:.25,s:'#ffa657',l:'🟠'};
-  if(sc>=3.2)return{f:'#ef4444',a:.55,s:'#ff7777',l:'ПИК 🔥'};
-  if(sc>=2.4)return{f:'#f97316',a:.50,s:'#ffaa55',l:'Висок ▲'};
-  if(sc>=1.6)return{f:'#f59e0b',a:.45,s:'#ffd060',l:'Среден'};
-  if(sc>=0.8)return{f:'#22c55e',a:.30,s:'#55ee88',l:'Нормален'};
-  return{f:'#1a3050',a:.15,s:'#2a4870',l:'Тих'};
+  if(type==='hospital') return sc>=1.5?{f:'#ef4444',a:.55,t:'#ff7777',l:'🏥 Активно'}:{f:'#7f1d1d',a:.35,t:'#cc3333',l:'🏥'};
+  if(type==='karyk')    return{f:'#f97316',a:.2,t:'#ffa657',l:'Карък'};
+  if(sc>=3.2) return{f:'#ef4444',a:.6,t:'#ff7777',l:'ПИК 🔥'};
+  if(sc>=2.4) return{f:'#f97316',a:.55,t:'#ffaa55',l:'Висок ▲'};
+  if(sc>=1.6) return{f:'#f59e0b',a:.45,t:'#ffd060',l:'Среден'};
+  if(sc>=0.8) return{f:'#22c55e',a:.30,t:'#55ee88',l:'Нормален'};
+  return{f:'#1a3050',a:.15,t:'#2a4870',l:'Тих'};
 }
+function getHints(h){
+  const hints=[];
+  EVENTS.forEach(function(ev){
+    if(!dayMatch(ev))return;
+    const diff=h-ev.endHour;
+    if(diff>=-1&&diff<=0.5) hints.push({type:'event',text:'⏱ Скоро: '+ev.name});
+    else if(diff>0&&diff<=1) hints.push({type:'event',text:'🔔 Активно: '+ev.name});
+  });
+  const hk=Object.keys(HOUR_HINTS).map(Number).sort(function(a,b){return Math.abs(a-h)-Math.abs(b-h);});
+  if(hk.length&&Math.abs(hk[0]-h)<=1) HOUR_HINTS[hk[0]].forEach(function(t){hints.push({type:'tip',text:t});});
+  return hints.slice(0,5);
+}
+
 function updHeatmap(){
   const h=autoHour?new Date().getHours():parseInt(document.getElementById('hrSlider').value);
   document.getElementById('hrSlider').value=h;
   document.getElementById('hrLabel').textContent=String(h).padStart(2,'0')+':00';
   const sc=computeScores(h);
-  // Remove old circles
-  zoneCircles.forEach(function(c){map.removeLayer(c);});zoneCircles=[];
-  // Remove colleague markers
-  colleagueMarkers.forEach(function(m){map.removeLayer(m);});colleagueMarkers=[];
+  const svg=document.getElementById('heatSvg');
+  if(!svg)return;
+  let s='<rect width="400" height="360" fill="#0d1117"/>';
+  s+='<ellipse cx="195" cy="185" rx="135" ry="115" fill="none" stroke="#1e293b" stroke-width="2" opacity=".4" stroke-dasharray="8,5"/>';
+  s+='<line x1="0" y1="182" x2="400" y2="182" stroke="#1e293b" stroke-width="1" opacity=".3"/>';
+  s+='<line x1="195" y1="0" x2="195" y2="360" stroke="#1e293b" stroke-width="1" opacity=".3"/>';
   let topZone=null,topSc=0;
+  const sorted=[...ZONES].sort(function(a,b){return(sc[b.id]||0)-(sc[a.id]||0);});
   ZONES.forEach(function(z){
-    const s=sc[z.id]||0.3;
-    const col=demandColor(s,z.type);
-    const c=L.circle([z.lat,z.lng],{radius:z.r,fillColor:col.f,fillOpacity:col.a,color:col.s,weight:1.5,opacity:.7}).addTo(map);
-    c.bindPopup('<div style="font-size:13px"><b style="color:'+col.s+'">'+z.name+'</b><br>Търсене: <b>'+s.toFixed(1)+'</b> – '+col.l+'<br><small style="color:#888">'+z.type+'</small></div>');
-    zoneCircles.push(c);
-    if(s>topSc&&z.type!=='traffic'){topSc=s;topZone=z;}
+    const score=sc[z.id]||0.3;
+    const col=demandColor(score,z.type);
+    const x=lngToX(z.lng),y=latToY(z.lat),r=z.r;
+    if(score>=2.4){
+      s+='<circle cx="'+x+'" cy="'+y+'" r="'+(r+8)+'" fill="'+col.f+'" opacity="0.12"/>';
+      s+='<circle cx="'+x+'" cy="'+y+'" r="'+(r+16)+'" fill="'+col.f+'" opacity="0.05"/>';
+    }
+    s+='<circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="'+col.f+'" opacity="'+col.a+'" stroke="'+col.t+'" stroke-width="1.2"/>';
+    if(score>=1.5||z.type==='airport'||z.type==='hospital'){
+      s+='<text x="'+x+'" y="'+(y+1)+'" text-anchor="middle" dominant-baseline="middle" font-size="9" fill="'+col.t+'" font-family="system-ui">'+z.name.slice(0,2)+'</text>';
+    }
+    if(score>topSc&&z.type!=='karyk'){topSc=score;topZone=z;}
   });
-  // Show top zone recommendation
+  // Colleague taxis (deterministic for stable display)
+  const seed=h*37+todayDay*13;
+  for(var i=0;i<18;i++){
+    const idx=Math.abs((seed*i*1013+i*7)%ZONES.length);
+    const z=ZONES[idx];
+    const jx=((seed*i*31+17)%28)-14;
+    const jy=((seed*i*53+11)%28)-14;
+    s+='<circle cx="'+(lngToX(z.lng)+jx)+'" cy="'+(latToY(z.lat)+jy)+'" r="3" fill="#f5c518" opacity="0.55"/>';
+  }
+  // My position
+  const mx=lngToX(23.322),my=latToY(42.698);
+  s+='<circle cx="'+mx+'" cy="'+my+'" r="9" fill="#f5c518" opacity="0.2"/>';
+  s+='<circle cx="'+mx+'" cy="'+my+'" r="5" fill="#f5c518" stroke="#000" stroke-width="1.5"/>';
+  s+='<text x="'+mx+'" y="'+(my-11)+'" text-anchor="middle" font-size="8" fill="#f5c518" font-family="system-ui">ВИЕ</text>';
+  svg.innerHTML=s;
+  // Top zone
   if(topZone){
     const col2=demandColor(topSc,topZone.type);
-    document.getElementById('topZone').innerHTML='💡 <b>Препоръка:</b> '+topZone.name+' – '+col2.l+' ('+topSc.toFixed(1)+')';
+    document.getElementById('topZone').innerHTML='💡 <b>Препоръка:</b> '+topZone.name+' — '+col2.l+' ('+topSc.toFixed(1)+')';
   }
-  // Simulate colleague taxis (so driver can avoid crowded areas)
-  const colCount=Math.floor(rnd(8,18));
-  for(let i=0;i<colCount;i++){
-    const rzone=ZONES[Math.floor(Math.random()*ZONES.length)];
-    const lat=rzone.lat+rnd(-0.015,0.015),lng=rzone.lng+rnd(-0.015,0.015);
-    const icon2=L.divIcon({className:'',html:'<div style="width:10px;height:10px;background:#f5c518;border:1.5px solid #000;border-radius:50%;opacity:.7"></div>',iconSize:[10,10],iconAnchor:[5,5]});
-    const cm=L.marker([lat,lng],{icon:icon2}).addTo(map);
-    cm.bindPopup('<div style="font-size:12px;color:#f5c518">🚕 Колега</div>');
-    colleagueMarkers.push(cm);
-  }
+  // Hints
+  const hints=getHints(h);
+  document.getElementById('hintsBox').innerHTML=hints.length?hints.map(function(ht){
+    return '<div class="notice '+(ht.type==='event'?'nwarn':'ninfo')+'" style="font-size:12px;padding:7px 10px">'+esc(ht.text)+'</div>';
+  }).join(''):'<div style="font-size:12px;color:var(--mu);padding:4px">Спокоен час. Добър момент за почивка.</div>';
+  // Zone list
+  document.getElementById('zoneList').innerHTML=sorted.slice(0,10).map(function(z){
+    const score=sc[z.id]||0.3;
+    const col=demandColor(score,z.type);
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--brd);font-size:12px">'+
+      '<span>'+z.name+'</span>'+
+      '<span style="color:'+col.t+';font-weight:800">'+col.l+'</span></div>';
+  }).join('');
 }
-function setAutoHour(){
-  autoHour=true;updHeatmap();
-  setInterval(function(){if(autoHour)updHeatmap();},60000);
-}
-function toggleMSheet(){
-  const sh=document.querySelector('.msheet');
-  const col=sh.style.maxHeight==='52px';
-  sh.style.maxHeight=col?'':'52px';
-  sh.style.overflow=col?'':'hidden';
-}
+function setAutoHour(){autoHour=true;updHeatmap();}
+setInterval(function(){if(autoHour)updHeatmap();},60000);
 
 // ═══ NOTIFICATIONS ═══
 function showNotif(msg){
@@ -1033,5 +1109,71 @@ function showNotif(msg){
   setTimeout(function(){el.remove();},2500);
 }
 </script>
+<!-- PWA INSTALL BANNER -->
+<div id="pwa-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:999;background:#111;border-top:2px solid #f5c518;padding:11px 14px;display:none;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 -4px 20px #000a">
+  <div style="display:flex;align-items:center;gap:10px;min-width:0">
+    <span style="font-size:26px;flex-shrink:0">🐟</span>
+    <div style="min-width:0">
+      <div style="font-size:13px;font-weight:900;color:#f0f0f0">Инсталирай приложението</div>
+      <div style="font-size:11px;color:#888;margin-top:1px">Работи офлайн · Бърз достъп</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:7px;flex-shrink:0">
+    <button id="pwa-dismiss" style="background:transparent;border:1px solid #333;border-radius:8px;padding:7px 12px;font-size:12px;color:#888;cursor:pointer;font-weight:700">Не сега</button>
+    <button id="pwa-install" style="background:#f5c518;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:900;color:#000;cursor:pointer">Инсталирай ↓</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  let deferredPrompt=null;
+  const banner=document.getElementById('pwa-banner');
+  
+  // Check if already installed
+  if(window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone){
+    return; // Already installed
+  }
+  
+  // Check if dismissed recently
+  if(localStorage.getItem('pwa-dismissed')){
+    const t=parseInt(localStorage.getItem('pwa-dismissed'));
+    if(Date.now()-t < 3*24*60*60*1000) return; // 3 days
+  }
+  
+  window.addEventListener('beforeinstallprompt',function(e){
+    e.preventDefault();
+    deferredPrompt=e;
+    setTimeout(function(){banner.style.display='flex';},2000);
+  });
+  
+  document.getElementById('pwa-install').addEventListener('click',function(){
+    if(!deferredPrompt)return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function(r){
+      if(r.outcome==='accepted') banner.style.display='none';
+      deferredPrompt=null;
+    });
+  });
+  
+  document.getElementById('pwa-dismiss').addEventListener('click',function(){
+    banner.style.display='none';
+    localStorage.setItem('pwa-dismissed',Date.now());
+  });
+  
+  // iOS Safari hint (no beforeinstallprompt support)
+  const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isSafari=/^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+  if(isIOS&&isSafari&&!window.navigator.standalone){
+    setTimeout(function(){
+      banner.style.display='flex';
+      document.getElementById('pwa-install').textContent='Как да инсталирам?';
+      document.getElementById('pwa-install').onclick=function(){
+        alert('За да инсталираш: Сподели (□↑) > Добави към началния екран > Добави')
+      };
+    },2000);
+  }
+})();
+</script>
+
 </body>
 </html>
