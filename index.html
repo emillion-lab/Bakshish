@@ -318,7 +318,7 @@ select.finp{cursor:pointer}
 </div>
 
 <!-- ═══ MAP/HEATMAP PAGE ═══ -->
-<div class="pg" id="pg-map" style="overflow-y:auto">
+<div class="pg" id="pg-map" style="overflow-y:auto;display:none;flex-direction:column">
   <div class="scroll" style="padding:8px">
 
     <!-- Hour control -->
@@ -673,7 +673,7 @@ function goTab(tab){
   document.querySelectorAll('.tab').forEach(function(b){b.classList.remove('on');});
   document.getElementById('pg-'+tab).classList.add('on');
   document.getElementById('t-'+tab).classList.add('on');
-  if(tab==='map')setTimeout(updHeatmap,50);
+  if(tab==='map'){setTimeout(updHeatmap,100);setTimeout(updHeatmap,500);}
 }
 
 // ═══ ONLINE TOGGLE ═══
@@ -1070,6 +1070,8 @@ function updHeatmap(){
   const sc=computeScores(h);
   const svg=document.getElementById('heatSvg');
   if(!svg)return;
+  // Retry if page not visible yet (SVG width = 0)
+  if(svg.getBoundingClientRect().width===0){setTimeout(updHeatmap,200);return;}
   let s='<rect width="400" height="360" fill="#0d1117"/>';
   s+='<ellipse cx="195" cy="185" rx="135" ry="115" fill="none" stroke="#1e293b" stroke-width="2" opacity=".4" stroke-dasharray="8,5"/>';
   s+='<line x1="0" y1="182" x2="400" y2="182" stroke="#1e293b" stroke-width="1" opacity=".3"/>';
