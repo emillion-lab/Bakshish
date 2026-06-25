@@ -245,12 +245,18 @@ select.finp{cursor:pointer}
     <div class="sec">
       <div class="sec-t">🚗 Опции за днес</div>
       <div class="chips" id="quickOpts">
-        <div class="chip" onclick="togChip(this,'sm')">🚬 Пушачи</div>
         <div class="chip gr-on" onclick="togChip(this,'ac')">❄️ AC</div>
-        <div class="chip" onclick="togChip(this,'ch')">👶 Детско</div>
+        <div class="chip" onclick="togChip(this,'sm')">🚬 Пушачи</div>
+        <div class="chip gr-on" onclick="togChip(this,'nosmoker')">🚭 Непушач</div>
+        <div class="chip" onclick="togChip(this,'ch')">👶 Детско столче</div>
         <div class="chip" onclick="togChip(this,'pe')">🐾 Животни</div>
         <div class="chip" onclick="togChip(this,'ca')">💳 Карта</div>
-        <div class="chip" onclick="togChip(this,'usb')">🔌 USB</div>
+        <div class="chip" onclick="togChip(this,'usb')">🔌 USB/Wireless</div>
+        <div class="chip" onclick="togChip(this,'lr')">🦵 Legroom</div>
+        <div class="chip" onclick="togChip(this,'ventseats')">🌡️ Вентилирани седалки</div>
+        <div class="chip" onclick="togChip(this,'backscreen')">📺 Заден екран</div>
+        <div class="chip" onclick="togChip(this,'fast')">⚡ 0-100 под 5 сек</div>
+        <div class="chip" onclick="togChip(this,'bigtrunk')">🧳 Багажник XXXL</div>
       </div>
     </div>
 
@@ -458,12 +464,32 @@ select.finp{cursor:pointer}
         <div class="tsw" id="ts-silent" onclick="togSet(this,'silent')"></div>
       </div>
       <div class="togrow">
-        <div><div class="lbl">😶 Предпочитам мълчание</div><div class="sub">Не инициирам разговор</div></div>
+        <div><div class="lbl">😶 Мълча прекалено много</div><div class="sub">Не инициирам разговор</div></div>
         <div class="tsw" id="ts-toosilent" onclick="togSet(this,'toosilent')"></div>
       </div>
       <div class="togrow">
         <div><div class="lbl">🕵️ Конспиратор</div><div class="sub">Обичам да обсъждам тайни</div></div>
         <div class="tsw" id="ts-conspiracy" onclick="togSet(this,'conspiracy')"></div>
+      </div>
+      <div class="togrow">
+        <div><div class="lbl">🔍 Търся истината в живота</div></div>
+        <div class="tsw" id="ts-truthseeker" onclick="togSet(this,'truthseeker')"></div>
+      </div>
+      <div class="togrow">
+        <div><div class="lbl">🚫🎶 Не пускам чалга</div></div>
+        <div class="tsw" id="ts-nochalgaplease" onclick="togSet(this,'nochalgaplease')"></div>
+      </div>
+      <div class="togrow">
+        <div><div class="lbl">🚭 Никога не съм пушил</div></div>
+        <div class="tsw" id="ts-nosmoker" onclick="togSet(this,'nosmoker')"></div>
+      </div>
+      <div class="togrow">
+        <div><div class="lbl">⚽❌ Не гледам футбол</div></div>
+        <div class="tsw" id="ts-nofootball" onclick="togSet(this,'nofootball')"></div>
+      </div>
+      <div class="togrow">
+        <div><div class="lbl">🏨❌ Никога не съм бил в Максим/Туда</div></div>
+        <div class="tsw" id="ts-nomaksim" onclick="togSet(this,'nomaksim')"></div>
       </div>
       <div class="togrow">
         <div><div class="lbl">🔍 Търся истината в живота</div></div>
