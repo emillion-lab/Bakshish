@@ -329,10 +329,9 @@ select.finp{cursor:pointer}
       <button onclick="setAutoHour()" style="background:var(--s3);border:1px solid var(--brd);border-radius:7px;padding:4px 9px;font-size:11px;color:var(--mu);cursor:pointer;white-space:nowrap">🔄 Сега</button>
     </div>
 
-    <!-- SVG MAP -->
+    <!-- CANVAS MAP -->
     <div style="position:relative;background:var(--s2);border:1px solid var(--brd);border-radius:12px;overflow:hidden">
-      <svg id="heatSvg" viewBox="0 0 400 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block"></svg>
-      <!-- Overlay label -->
+      <canvas id="heatCanvas" style="width:100%;display:block;border-radius:12px"></canvas>
       <div style="position:absolute;top:8px;left:8px;font-size:10px;font-weight:700;color:rgba(255,255,255,.4);pointer-events:none">СОФИЯ</div>
     </div>
 
@@ -1068,64 +1067,101 @@ function updHeatmap(){
   document.getElementById('hrSlider').value=h;
   document.getElementById('hrLabel').textContent=String(h).padStart(2,'0')+':00';
   const sc=computeScores(h);
-  const svg=document.getElementById('heatSvg');
-  if(!svg)return;
-  // Retry if page not visible yet (SVG width = 0)
-  if(svg.getBoundingClientRect().width===0){setTimeout(updHeatmap,200);return;}
-  let s='<rect width="400" height="360" fill="#0d1117"/>';
-  s+='<ellipse cx="195" cy="185" rx="135" ry="115" fill="none" stroke="#1e293b" stroke-width="2" opacity=".4" stroke-dasharray="8,5"/>';
-  s+='<line x1="0" y1="182" x2="400" y2="182" stroke="#1e293b" stroke-width="1" opacity=".3"/>';
-  s+='<line x1="195" y1="0" x2="195" y2="360" stroke="#1e293b" stroke-width="1" opacity=".3"/>';
+  const canvas=document.getElementById('heatCanvas');
+  if(!canvas) return;
+
+  // Set canvas size based on container width
+  const W=canvas.parentElement.offsetWidth||400;
+  const H=Math.round(W*0.9);
+  canvas.width=W;canvas.height=H;
+  canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d');
+
+  // Scale functions
+  function lx(lng){return Math.round((lng-23.25)/(23.44-23.25)*W);}
+  function ly(lat){return Math.round((42.74-lat)/(42.74-42.60)*H);}
+  function lr(r){return Math.round(r*(W/400));}
+
+  // Background
+  ctx.fillStyle='#0d1117';ctx.fillRect(0,0,W,H);
+
+  // Ring road
+  ctx.beginPath();ctx.ellipse(lx(23.322),ly(42.698),lr(130),lr(110),0,0,Math.PI*2);
+  ctx.strokeStyle='#1e293b';ctx.lineWidth=2;ctx.setLineDash([8,5]);ctx.stroke();ctx.setLineDash([]);
+
+  // Grid lines
+  ctx.strokeStyle='#1e293b';ctx.lineWidth=1;ctx.globalAlpha=.4;
+  ctx.beginPath();ctx.moveTo(0,ly(42.698));ctx.lineTo(W,ly(42.698));ctx.stroke();
+  ctx.beginPath();ctx.moveTo(lx(23.322),0);ctx.lineTo(lx(23.322),H);ctx.stroke();
+  ctx.globalAlpha=1;
+
   let topZone=null,topSc=0;
-  const sorted=[...ZONES].sort(function(a,b){return(sc[b.id]||0)-(sc[a.id]||0);});
+
   ZONES.forEach(function(z){
     const score=sc[z.id]||0.3;
     const col=demandColor(score,z.type);
-    const x=lngToX(z.lng),y=latToY(z.lat),r=z.r;
+    const x=lx(z.lng),y=ly(z.lat),r=lr(z.r);
+    // Glow for high demand
     if(score>=2.4){
-      s+='<circle cx="'+x+'" cy="'+y+'" r="'+(r+8)+'" fill="'+col.f+'" opacity="0.12"/>';
-      s+='<circle cx="'+x+'" cy="'+y+'" r="'+(r+16)+'" fill="'+col.f+'" opacity="0.05"/>';
+      const g=ctx.createRadialGradient(x,y,0,x,y,r*2.5);
+      g.addColorStop(0,col.f+'40');g.addColorStop(1,'transparent');
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r*2.5,0,Math.PI*2);ctx.fill();
     }
-    s+='<circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="'+col.f+'" opacity="'+col.a+'" stroke="'+col.t+'" stroke-width="1.2"/>';
+    // Main circle
+    ctx.globalAlpha=col.a;ctx.fillStyle=col.f;
+    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();
+    ctx.globalAlpha=1;ctx.strokeStyle=col.t;ctx.lineWidth=1.2;
+    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.stroke();
+    // Label
     if(score>=1.5||z.type==='airport'||z.type==='hospital'){
-      s+='<text x="'+x+'" y="'+(y+1)+'" text-anchor="middle" dominant-baseline="middle" font-size="9" fill="'+col.t+'" font-family="system-ui">'+z.name.slice(0,2)+'</text>';
+      ctx.fillStyle=col.t;ctx.font='bold '+lr(9)+'px system-ui';
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(z.name.slice(0,2),x,y);
     }
     if(score>topSc&&z.type!=='karyk'){topSc=score;topZone=z;}
   });
-  // Colleague taxis (deterministic for stable display)
-  const seed=h*37+todayDay*13;
+
+  // Colleague taxis
+  const seed=h*37+new Date().getDay()*13;
+  ctx.fillStyle='#f5c518';ctx.globalAlpha=0.6;
   for(var i=0;i<18;i++){
     const idx=Math.abs((seed*i*1013+i*7)%ZONES.length);
     const z=ZONES[idx];
     const jx=((seed*i*31+17)%28)-14;
     const jy=((seed*i*53+11)%28)-14;
-    s+='<circle cx="'+(lngToX(z.lng)+jx)+'" cy="'+(latToY(z.lat)+jy)+'" r="3" fill="#f5c518" opacity="0.55"/>';
+    ctx.beginPath();ctx.arc(lx(z.lng)+jx*W/400,ly(z.lat)+jy*H/360,lr(3),0,Math.PI*2);ctx.fill();
   }
+  ctx.globalAlpha=1;
+
   // My position
-  const mx=lngToX(23.322),my=latToY(42.698);
-  s+='<circle cx="'+mx+'" cy="'+my+'" r="9" fill="#f5c518" opacity="0.2"/>';
-  s+='<circle cx="'+mx+'" cy="'+my+'" r="5" fill="#f5c518" stroke="#000" stroke-width="1.5"/>';
-  s+='<text x="'+mx+'" y="'+(my-11)+'" text-anchor="middle" font-size="8" fill="#f5c518" font-family="system-ui">ВИЕ</text>';
-  svg.innerHTML=s;
-  // Top zone
+  const mx=lx(23.322),my=ly(42.698);
+  ctx.fillStyle='rgba(245,197,24,.2)';ctx.beginPath();ctx.arc(mx,my,lr(9),0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#f5c518';ctx.strokeStyle='#000';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.arc(mx,my,lr(5),0,Math.PI*2);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#f5c518';ctx.font='bold '+lr(8)+'px system-ui';
+  ctx.textAlign='center';ctx.fillText('ВИЕ',mx,my-lr(11));
+
+  // Top zone recommendation
   if(topZone){
     const col2=demandColor(topSc,topZone.type);
     document.getElementById('topZone').innerHTML='💡 <b>Препоръка:</b> '+topZone.name+' — '+col2.l+' ('+topSc.toFixed(1)+')';
   }
+
   // Hints
   const hints=getHints(h);
   document.getElementById('hintsBox').innerHTML=hints.length?hints.map(function(ht){
     return '<div class="notice '+(ht.type==='event'?'nwarn':'ninfo')+'" style="font-size:12px;padding:7px 10px">'+esc(ht.text)+'</div>';
   }).join(''):'<div style="font-size:12px;color:var(--mu);padding:4px">Спокоен час. Добър момент за почивка.</div>';
+
   // Zone list
+  var sorted=[...ZONES].sort(function(a,b){return(sc[b.id]||0)-(sc[a.id]||0);});
   document.getElementById('zoneList').innerHTML=sorted.slice(0,10).map(function(z){
-    const score=sc[z.id]||0.3;
-    const col=demandColor(score,z.type);
+    const score=sc[z.id]||0.3;const col=demandColor(score,z.type);
     return '<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--brd);font-size:12px">'+
-      '<span>'+z.name+'</span>'+
-      '<span style="color:'+col.t+';font-weight:800">'+col.l+'</span></div>';
+      '<span>'+z.name+'</span><span style="color:'+col.t+';font-weight:800">'+col.l+'</span></div>';
   }).join('');
 }
+
 function setAutoHour(){autoHour=true;updHeatmap();}
 setInterval(function(){if(autoHour)updHeatmap();},60000);
 
