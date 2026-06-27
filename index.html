@@ -11,12 +11,12 @@
 <style>
 :root{
   --bg:#050910;--s1:#0d1117;--s2:#161b22;--s3:#1e2936;--brd:#21262d;--brd2:#30363d;
-  --y:#f5c518;--yd:rgba(245,197,24,.12);--tx:#e6edf3;--mu:#7d8590;--mu2:#444;
+  --y:#f5c518;--yd:rgba(245,197,24,.12);--tx:#e6edf3;--mu:#a8b5c8;--mu2:#666;
   --gr:#3fb950;--rd:#f85149;--bl:#58a6ff;--or:#ffa657;--pu:#bc8cff;--cy:#39d353;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%}
-body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden;font-size:15px}
+html,body{font-size:16px;height:100%}
+body{font-size:16px;background:var(--bg);color:var(--tx);font-family:'Segoe UI',system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden;font-size:15px}
 
 /* TOP */
 .top{background:#000;border-bottom:2px solid var(--gr);height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;flex-shrink:0;z-index:10}
@@ -25,18 +25,18 @@ body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',system-ui,sans-
 .otog.on{background:#0d2818;border-color:var(--gr)}
 .tdot{width:8px;height:8px;border-radius:50%;background:var(--mu);transition:.2s;flex-shrink:0}
 .otog.on .tdot{background:var(--gr);box-shadow:0 0 6px var(--gr)}
-.tlbl{font-size:12px;font-weight:800}
+.tlbl{font-size:14px;font-weight:800}
 
 /* STATUS BAR */
 .sbar{display:grid;grid-template-columns:repeat(4,1fr);background:var(--s1);border-bottom:1px solid var(--brd);flex-shrink:0}
 .si{padding:7px 4px;text-align:center;border-right:1px solid var(--brd)}
 .si:last-child{border:none}
-.sv{font-size:14px;font-weight:900}.sl{font-size:9px;color:var(--mu);font-weight:700;margin-top:1px}
+.sv{font-size:14px;font-weight:900}.sl{font-size:14px;color:var(--mu);font-weight:700;margin-top:1px}
 .sy{color:var(--y)}.sg{color:var(--gr)}.sb{color:var(--bl)}.sr{color:var(--rd)}
 
 /* TABS */
 .tabs{display:flex;background:var(--s1);border-bottom:1px solid var(--brd);flex-shrink:0}
-.tab{flex:1;padding:9px 2px;font-size:11px;font-weight:800;border:none;background:transparent;color:var(--mu);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;overflow:hidden}
+.tab{flex:1;padding:9px 2px;font-size:15px;font-weight:800;border:none;background:transparent;color:var(--mu);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;overflow:hidden}
 .tab.on{color:var(--y);border-bottom-color:var(--y)}
 .tab .dot{display:none;width:6px;height:6px;background:var(--rd);border-radius:50%;margin-left:3px;vertical-align:middle;animation:pulse 1.5s infinite}
 .tab .dot.show{display:inline-block}
@@ -51,28 +51,28 @@ body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',system-ui,sans-
 
 /* SECTION CARD */
 .sec{background:var(--s2);border:1px solid var(--brd);border-radius:12px;padding:12px;margin-bottom:10px}
-.sec-t{font-size:11px;font-weight:900;color:var(--y);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.sec-t{font-size:15px;font-weight:900;color:var(--y);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
 
 /* FORM ELEMENTS */
 .finp{background:var(--bg);border:1px solid var(--brd);border-radius:8px;color:var(--tx);font-size:14px;padding:9px 11px;outline:none;width:100%;font-family:inherit}
 .finp:focus{border-color:var(--y)}
 .finp::placeholder{color:var(--mu)}
 select.finp{cursor:pointer}
-.flbl{font-size:11px;color:var(--mu);font-weight:700;margin-bottom:4px;display:block}
+.flbl{font-size:15px;color:var(--mu);font-weight:700;margin-bottom:4px;display:block}
 .frow{display:flex;gap:8px;margin-bottom:8px}
 .frow .finp{flex:1}
 .fg{margin-bottom:9px}
 
 /* TARIFF GRID */
 .tgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.tf label{font-size:10px;color:var(--mu);font-weight:700;text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:3px}
+.tf label{font-size:15px;color:var(--mu);font-weight:700;text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:3px}
 .tf input{background:var(--bg);border:1px solid var(--brd);border-radius:7px;color:var(--tx);font-size:17px;font-weight:900;width:100%;padding:7px 9px;outline:none;transition:.15s}
 .tf input:focus{border-color:var(--y)}
 .tf input::-webkit-outer-spin-button,.tf input::-webkit-inner-spin-button{-webkit-appearance:none}
 
 /* CHIPS */
 .chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
-.chip{background:var(--bg);border:1px solid var(--brd);border-radius:14px;padding:5px 11px;font-size:12px;font-weight:700;cursor:pointer;color:var(--mu);transition:.12s;user-select:none}
+.chip{background:var(--bg);border:1px solid var(--brd);border-radius:14px;padding:5px 11px;font-size:14px;font-weight:700;cursor:pointer;color:var(--mu);transition:.12s;user-select:none}
 .chip.on{border-color:var(--y);color:var(--y);background:var(--yd)}
 .chip.gr-on{border-color:var(--gr);color:var(--gr);background:rgba(63,185,80,.08)}
 .chip.rd-on{border-color:var(--rd);color:var(--rd);background:rgba(248,81,73,.08)}
@@ -82,8 +82,8 @@ select.finp{cursor:pointer}
 /* TOGGLE SWITCH */
 .togrow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--brd)}
 .togrow:last-child{border:none}
-.togrow .lbl{font-size:13px;font-weight:600}
-.togrow .sub{font-size:11px;color:var(--mu);margin-top:1px}
+.togrow .lbl{font-size:15px;font-weight:600}
+.togrow .sub{font-size:15px;color:var(--mu);margin-top:1px}
 .tsw{width:40px;height:22px;background:var(--brd2);border-radius:11px;cursor:pointer;position:relative;transition:.2s;flex-shrink:0}
 .tsw.on{background:var(--y)}
 .tsw::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:3px;transition:.2s}
@@ -92,7 +92,7 @@ select.finp{cursor:pointer}
 /* CALC */
 .calcgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
 .cbox{background:var(--bg);border-radius:8px;padding:9px;text-align:center}
-.cbox .l{font-size:10px;color:var(--mu);font-weight:700;text-transform:uppercase}
+.cbox .l{font-size:15px;color:var(--mu);font-weight:700;text-transform:uppercase}
 .cbox .v{font-size:16px;font-weight:900;color:var(--y);margin-top:2px}
 
 /* MAP */
@@ -107,7 +107,7 @@ select.finp{cursor:pointer}
 .meter{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
 .mitem{background:var(--bg);border-radius:9px;padding:11px;text-align:center}
 .mitem .mv{font-size:24px;font-weight:900;line-height:1}
-.mitem .ml{font-size:10px;color:var(--mu);margin-top:2px}
+.mitem .ml{font-size:15px;color:var(--mu);margin-top:2px}
 
 /* ORDER POPUP */
 .opop{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:400;display:flex;align-items:flex-end;justify-content:center;padding:8px}
@@ -115,15 +115,15 @@ select.finp{cursor:pointer}
 .ocard{background:var(--s2);border:1px solid var(--brd);border-top:3px solid var(--y);border-radius:16px 16px 0 0;padding:16px;width:100%;max-width:520px;display:flex;flex-direction:column;gap:10px;animation:su .3s ease}
 @keyframes su{from{transform:translateY(80%)}to{transform:translateY(0)}}
 .otimer{font-size:44px;font-weight:900;color:var(--y);text-align:center;line-height:1}
-.otlbl{font-size:11px;color:var(--mu);text-align:center;font-weight:700}
-.oroute{background:var(--s1);border-radius:8px;padding:10px;font-size:13px}
+.otlbl{font-size:15px;color:var(--mu);text-align:center;font-weight:700}
+.oroute{background:var(--s1);border-radius:8px;padding:10px;font-size:15px}
 .opt{display:flex;align-items:center;gap:8px;padding:2px 0}
 .odot{width:8px;height:8px;border-radius:50%}
 .oline{width:1px;height:12px;background:var(--brd);margin-left:3px}
 .opbig{text-align:center;padding:10px 0}
-.opbig .l{font-size:12px;color:var(--mu)}
+.opbig .l{font-size:14px;color:var(--mu)}
 .opbig .v{font-size:36px;font-weight:900;color:var(--y)}
-.opbig .s{font-size:12px;color:var(--mu);margin-top:2px}
+.opbig .s{font-size:14px;color:var(--mu);margin-top:2px}
 .obtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .bacc{background:var(--gr);color:#000;border:none;border-radius:9px;padding:14px;font-size:15px;font-weight:900;cursor:pointer}
 .brej{background:var(--s3);color:var(--rd);border:1px solid rgba(248,81,73,.35);border-radius:9px;padding:14px;font-size:15px;font-weight:900;cursor:pointer}
@@ -134,18 +134,18 @@ select.finp{cursor:pointer}
 .btg{background:var(--s3);border:1px solid var(--brd);color:var(--tx)}
 .btgr{background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.3);color:var(--gr)}
 .btrd{background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.3);color:var(--rd)}
-.btn-sm{padding:8px 14px;font-size:13px;width:auto;border-radius:8px;display:inline-block;margin:0}
+.btn-sm{padding:8px 14px;font-size:15px;width:auto;border-radius:8px;display:inline-block;margin:0}
 
 /* VERIFICATION */
 .verify-step{display:none;flex-direction:column;gap:10px}
 .verify-step.on{display:flex}
-.vstep-badge{font-size:11px;font-weight:800;color:var(--mu);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.vstep-badge{font-size:15px;font-weight:800;color:var(--mu);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
 .car-result{background:var(--s1);border:1px solid var(--brd);border-radius:9px;padding:10px;cursor:pointer;transition:border-color .15s}
 .car-result:hover,.car-result.sel{border-color:var(--y)}
-.car-result .plate{font-family:monospace;font-weight:900;background:var(--y);color:#000;padding:2px 7px;border-radius:4px;font-size:13px;letter-spacing:.6px;display:inline-block;margin-bottom:4px}
+.car-result .plate{font-family:monospace;font-weight:900;background:var(--y);color:#000;padding:5px 10px;border-radius:4px;font-size:15px;letter-spacing:.6px;display:inline-block;margin-bottom:4px}
 .car-result .model{font-size:14px;font-weight:700}
-.car-result .op{font-size:11px;color:var(--cy);margin-top:2px}
-.car-result .lic{font-size:10px;color:var(--mu);margin-top:1px}
+.car-result .op{font-size:15px;color:var(--cy);margin-top:2px}
+.car-result .lic{font-size:15px;color:var(--mu);margin-top:1px}
 
 /* PHOTO UPLOAD */
 .photo-box{border:2px dashed var(--brd2);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:border-color .15s}
@@ -154,7 +154,7 @@ select.finp{cursor:pointer}
 .photo-preview{width:100%;border-radius:8px;margin-top:8px;max-height:160px;object-fit:cover}
 
 /* NOTICE */
-.notice{padding:9px 11px;border-radius:8px;font-size:13px;font-weight:600;line-height:1.5}
+.notice{padding:9px 11px;border-radius:8px;font-size:15px;font-weight:600;line-height:1.5}
 .nok{background:rgba(63,185,80,.08);color:var(--gr);border:1px solid rgba(63,185,80,.2)}
 .nwarn{background:rgba(245,197,24,.08);color:var(--y);border:1px solid rgba(245,197,24,.2)}
 .ninfo{background:rgba(88,166,255,.08);color:var(--bl);border:1px solid rgba(88,166,255,.2)}
@@ -163,25 +163,25 @@ select.finp{cursor:pointer}
 /* EARNINGS */
 .egrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
 .ecard{background:var(--s2);border:1px solid var(--brd);border-radius:9px;padding:11px}
-.ecard .et{font-size:10px;color:var(--mu);font-weight:700;text-transform:uppercase;margin-bottom:3px}
+.ecard .et{font-size:15px;color:var(--mu);font-weight:700;text-transform:uppercase;margin-bottom:3px}
 .ecard .ev{font-size:20px;font-weight:900}
 .ecard.big{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center}
 .hist-item{background:var(--s2);border:1px solid var(--brd);border-radius:8px;padding:9px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
-.hist-l .hr{font-size:12px;font-weight:700}
-.hist-l .hm{font-size:10px;color:var(--mu);margin-top:1px}
+.hist-l .hr{font-size:14px;font-weight:700}
+.hist-l .hm{font-size:15px;color:var(--mu);margin-top:1px}
 .hist-amt{font-size:15px;font-weight:900;color:var(--gr)}
-.plate{font-family:monospace;font-weight:900;background:var(--y);color:#000;padding:3px 8px;border-radius:5px;font-size:13px;letter-spacing:.6px;display:inline-block}
+.plate{font-family:monospace;font-weight:900;background:var(--y);color:#000;padding:6px 12px;border-radius:5px;font-size:15px;letter-spacing:.6px;display:inline-block}
 
 /* HEATMAP LEGEND */
 .hlegend{display:flex;gap:5px;flex-wrap:wrap;padding:0 10px 8px;flex-shrink:0}
-.hlbl{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px}
+.hlbl{font-size:15px;font-weight:700;padding:5px 10px;border-radius:10px}
 </style>
 </head>
 <body>
 
 <!-- TOP -->
 <div class="top">
-  <div class="logo">🐟 Bak<b>shish</b> <span style="font-size:11px;color:var(--mu);font-weight:400">Шофьор</span></div>
+  <div class="logo">🐟 Bak<b>shish</b> <span style="font-size:15px;color:var(--mu);font-weight:400">Шофьор</span></div>
   <div id="otog" class="otog" onclick="toggleOnline()">
     <div class="tdot"></div>
     <span class="tlbl" id="tlbl">ОФЛАЙН</span>
@@ -222,7 +222,7 @@ select.finp{cursor:pointer}
     <div class="sec">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <div class="sec-t" style="margin:0">🏷️ Тарифа</div>
-        <span id="tarvis" style="font-size:11px;color:var(--mu);font-weight:700">○ Невидима</span>
+        <span id="tarvis" style="font-size:15px;color:var(--mu);font-weight:700">○ Невидима</span>
       </div>
       <div class="tgrid">
         <div class="tf"><label>Старт ден (€)</label><input type="number" id="tsd" value="1.49" step="0.01" oninput="updCalc()"></div>
@@ -232,7 +232,7 @@ select.finp{cursor:pointer}
         <div class="tf"><label>Чакане/мин</label><input type="number" id="tw" value="0.25" step="0.01" oninput="updCalc()"></div>
         <div class="tf"><label>Повикване</label><input type="number" id="tb" value="0.59" step="0.01" oninput="updCalc()"></div>
       </div>
-      <div style="font-size:12px;color:var(--mu);margin:8px 0 5px">Калкулация: <span style="color:var(--y);font-weight:800" id="ckm">5</span> км</div>
+      <div style="font-size:14px;color:var(--mu);margin:8px 0 5px">Калкулация: <span style="color:var(--y);font-weight:800" id="ckm">5</span> км</div>
       <input type="range" id="csl" min="1" max="80" value="5" style="width:100%;accent-color:var(--y);margin-bottom:7px" oninput="updCalc()">
       <div class="calcgrid">
         <div class="cbox"><div class="l">☀️ Ден</div><div class="v" id="cd">–</div></div>
@@ -295,12 +295,12 @@ select.finp{cursor:pointer}
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
         <div>
           <div style="font-size:15px;font-weight:900" id="rClient">Без активен курс</div>
-          <div style="font-size:12px;color:var(--mu);margin-top:2px" id="rFrom">–</div>
-          <div style="font-size:12px;color:var(--mu)" id="rTo">–</div>
+          <div style="font-size:14px;color:var(--mu);margin-top:2px" id="rFrom">–</div>
+          <div style="font-size:14px;color:var(--mu)" id="rTo">–</div>
         </div>
-        <span id="rBadge" class="notice nwarn" style="font-size:11px;padding:4px 8px">СВОБОДЕН</span>
+        <span id="rBadge" class="notice nwarn" style="font-size:15px;padding:4px 8px">СВОБОДЕН</span>
       </div>
-      <div style="font-size:12px;color:var(--mu)">📞 <span style="color:var(--bl)" id="rPhone">–</span></div>
+      <div style="font-size:14px;color:var(--mu)">📞 <span style="color:var(--bl)" id="rPhone">–</span></div>
     </div>
     <div class="meter">
       <div class="mitem"><div class="mv sg" id="mTime">00:00</div><div class="ml">Минути</div></div>
@@ -323,29 +323,29 @@ select.finp{cursor:pointer}
 
     <!-- Hour control -->
     <div style="display:flex;align-items:center;gap:8px;padding:6px 0 8px">
-      <span style="font-size:12px;color:var(--mu)">🕐</span>
+      <span style="font-size:14px;color:var(--mu)">🕐</span>
       <input type="range" id="hrSlider" min="0" max="23" step="1" style="flex:1;accent-color:var(--y)" oninput="updHeatmap()">
       <span style="font-size:14px;font-weight:900;color:var(--y);min-width:42px" id="hrLabel">–</span>
-      <button onclick="setAutoHour()" style="background:var(--s3);border:1px solid var(--brd);border-radius:7px;padding:4px 9px;font-size:11px;color:var(--mu);cursor:pointer;white-space:nowrap">🔄 Сега</button>
+      <button onclick="setAutoHour()" style="background:var(--s3);border:1px solid var(--brd);border-radius:7px;padding:7px 13px;font-size:15px;color:var(--mu);cursor:pointer;white-space:nowrap">🔄 Сега</button>
     </div>
 
     <!-- CANVAS MAP -->
     <div style="position:relative;background:var(--s2);border:1px solid var(--brd);border-radius:12px;overflow:hidden">
       <canvas id="heatCanvas" style="width:100%;display:block;border-radius:12px"></canvas>
-      <div style="position:absolute;top:8px;left:8px;font-size:10px;font-weight:700;color:rgba(255,255,255,.4);pointer-events:none">СОФИЯ</div>
+      <div style="position:absolute;top:8px;left:8px;font-size:15px;font-weight:700;color:rgba(255,255,255,.4);pointer-events:none">СОФИЯ</div>
     </div>
 
     <!-- Legend -->
     <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:7px">
-      <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(239,68,68,.3);color:#ff7777">🔥 ПИК</span>
-      <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(249,115,22,.3);color:#ffaa55">▲ Висок</span>
-      <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(245,158,11,.3);color:#ffd060">Среден</span>
-      <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(34,197,94,.3);color:#55ee88">Нормален</span>
-      <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;background:rgba(245,197,24,.2);color:#f5c518">🚕 Колеги</span>
+      <span style="font-size:15px;font-weight:700;padding:5px 10px;border-radius:10px;background:rgba(239,68,68,.3);color:#ff7777">🔥 ПИК</span>
+      <span style="font-size:15px;font-weight:700;padding:5px 10px;border-radius:10px;background:rgba(249,115,22,.3);color:#ffaa55">▲ Висок</span>
+      <span style="font-size:15px;font-weight:700;padding:5px 10px;border-radius:10px;background:rgba(245,158,11,.3);color:#ffd060">Среден</span>
+      <span style="font-size:15px;font-weight:700;padding:5px 10px;border-radius:10px;background:rgba(34,197,94,.3);color:#55ee88">Нормален</span>
+      <span style="font-size:15px;font-weight:700;padding:5px 10px;border-radius:10px;background:rgba(245,197,24,.2);color:#f5c518">🚕 Колеги</span>
     </div>
 
     <!-- Top zone recommendation -->
-    <div id="topZone" class="notice nok" style="margin-top:8px;font-size:13px"></div>
+    <div id="topZone" class="notice nok" style="margin-top:8px;font-size:15px"></div>
 
     <!-- HINTS from SOF -->
     <div class="sec" style="margin-top:8px">
@@ -375,8 +375,8 @@ select.finp{cursor:pointer}
       <div class="ecard"><div class="et">Километри</div><div class="ev" id="eKm">0</div></div>
       <div class="ecard"><div class="et">Комисионна</div><div class="ev sg">0.00 €</div></div>
     </div>
-    <div style="font-size:11px;color:var(--mu);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:7px">История</div>
-    <div id="histList"><div style="font-size:13px;color:var(--mu);text-align:center;padding:20px">Все още няма курсове.</div></div>
+    <div style="font-size:15px;color:var(--mu);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:7px">История</div>
+    <div id="histList"><div style="font-size:15px;color:var(--mu);text-align:center;padding:20px">Все още няма курсове.</div></div>
   </div>
 </div>
 
@@ -398,12 +398,12 @@ select.finp{cursor:pointer}
       <!-- Step 2: Photos -->
       <div class="verify-step" id="vs2">
         <div class="vstep-badge">Стъпка 2 от 3 — Снимки</div>
-        <div id="selCarInfo" class="notice nok" style="font-size:12px"></div>
+        <div id="selCarInfo" class="notice nok" style="font-size:14px"></div>
         <div>
           <div class="flbl">📸 Снимка на колата (таблото/предна лява)</div>
           <div class="photo-box" id="carPhotoBox" onclick="triggerPhoto('carPhoto')">
             <div style="font-size:32px;margin-bottom:6px">🚗</div>
-            <div style="font-size:13px;color:var(--mu)">Натисни за снимка</div>
+            <div style="font-size:15px;color:var(--mu)">Натисни за снимка</div>
             <img id="carPhotoPreview" class="photo-preview" style="display:none">
           </div>
           <input type="file" id="carPhoto" accept="image/*" capture="environment" style="display:none" onchange="previewPhoto('carPhoto','carPhotoPreview','carPhotoBox')">
@@ -412,7 +412,7 @@ select.finp{cursor:pointer}
           <div class="flbl">🤳 Снимка на теб (селфи с документ)</div>
           <div class="photo-box" id="selfPhotoBox" onclick="triggerPhoto('selfPhoto')">
             <div style="font-size:32px;margin-bottom:6px">🧑</div>
-            <div style="font-size:13px;color:var(--mu)">Натисни за снимка</div>
+            <div style="font-size:15px;color:var(--mu)">Натисни за снимка</div>
             <img id="selfPhotoPreview" class="photo-preview" style="display:none">
           </div>
           <input type="file" id="selfPhoto" accept="image/*" capture="user" style="display:none" onchange="previewPhoto('selfPhoto','selfPhotoPreview','selfPhotoBox')">
@@ -576,7 +576,7 @@ select.finp{cursor:pointer}
 <div class="opop hide" id="opop">
   <div class="ocard">
     <div>
-      <div style="font-size:11px;font-weight:800;color:var(--mu);text-transform:uppercase;text-align:center;margin-bottom:4px">🔔 НОВА ПОРЪЧКА</div>
+      <div style="font-size:15px;font-weight:800;color:var(--mu);text-transform:uppercase;text-align:center;margin-bottom:4px">🔔 НОВА ПОРЪЧКА</div>
       <div class="otimer" id="otimer">15</div>
       <div class="otlbl">секунди за отговор</div>
     </div>
@@ -585,7 +585,7 @@ select.finp{cursor:pointer}
       <div class="oline" style="margin-left:3px"></div>
       <div class="opt"><div class="odot" style="background:var(--y)"></div><span id="oTo">–</span></div>
     </div>
-    <div style="font-size:12px;color:var(--mu);padding:0 2px">
+    <div style="font-size:14px;color:var(--mu);padding:0 2px">
       📍 <span id="oPkup">–</span> км до клиент · 🛣 ~<span id="oKm">–</span> км
     </div>
     <div class="opbig">
@@ -768,7 +768,7 @@ function searchCars(){
   const res=VEHICLES.filter(function(v){
     return v.p.toLowerCase().includes(q)||v.m.toLowerCase().includes(q)||v.l.includes(q)||v.d.toLowerCase().includes(q)||v.op.toLowerCase().includes(q);
   }).slice(0,20);
-  if(!res.length){document.getElementById('vResults').innerHTML='<div style="font-size:13px;color:var(--mu);padding:8px">Няма резултати. Опитай с рег. номер или марка.</div>';return;}
+  if(!res.length){document.getElementById('vResults').innerHTML='<div style="font-size:15px;color:var(--mu);padding:8px">Няма резултати. Опитай с рег. номер или марка.</div>';return;}
   document.getElementById('vResults').innerHTML=res.map(function(v){
     return '<div class="car-result" onclick="selectCar(\''+v.p+'\')">'+
       '<div class="plate">'+esc(v.p)+'</div>'+
@@ -827,13 +827,13 @@ function submitVerify(){
         '<div style="width:48px;height:48px;border-radius:50%;background:var(--y);color:#000;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;flex-shrink:0">'+esc(initials)+'</div>'+
         '<div>'+
           '<div style="font-size:16px;font-weight:900;letter-spacing:-.3px">'+esc(displayName)+'</div>'+
-          '<div style="font-size:12px;color:var(--mu)">'+esc(v.m)+' ('+v.y+')</div>'+
-          '<div class="plate" style="margin-top:4px;font-size:12px">'+esc(v.p)+'</div>'+
-          '<div style="font-size:11px;color:var(--cy);margin-top:3px">🏢 '+esc(v.op)+'</div>'+
+          '<div style="font-size:14px;color:var(--mu)">'+esc(v.m)+' ('+v.y+')</div>'+
+          '<div class="plate" style="margin-top:4px;font-size:14px">'+esc(v.p)+'</div>'+
+          '<div style="font-size:15px;color:var(--cy);margin-top:3px">🏢 '+esc(v.op)+'</div>'+
         '</div>'+
       '</div>';
     document.getElementById('verifiedCard').innerHTML=
-      '<div style="font-size:13px;margin-top:6px">'+
+      '<div style="font-size:15px;margin-top:6px">'+
         '<b>'+esc(v.p)+'</b> – '+esc(v.m)+' ('+v.y+')<br>'+
         (registryName?'<span style="color:var(--mu)">👤 '+esc(registryName)+'</span><br>':'')+
         '<span style="color:var(--mu)">Лиц. № '+esc(v.l)+'</span>'+
@@ -933,7 +933,7 @@ function updStats(){
 function renderHist(){
   document.getElementById('histList').innerHTML=hist.length?hist.map(function(h){
     return '<div class="hist-item"><div class="hist-l"><div class="hr">'+esc(h.from)+' → '+esc(h.to)+'</div><div class="hm">'+h.time+' · '+h.km.toFixed(1)+' км</div></div><div class="hist-amt">+'+h.price.toFixed(2)+'€</div></div>';
-  }).join(''):'<div style="font-size:13px;color:var(--mu);text-align:center;padding:20px">Все още няма курсове.</div>';
+  }).join(''):'<div style="font-size:15px;color:var(--mu);text-align:center;padding:20px">Все още няма курсове.</div>';
 }
 
 // ═══ SVG HEATMAP ═══(lat){ return Math.round((42.74-lat)/(42.74-42.60)*330+15); }
@@ -1150,14 +1150,14 @@ function updHeatmap(){
   // Hints
   const hints=getHints(h);
   document.getElementById('hintsBox').innerHTML=hints.length?hints.map(function(ht){
-    return '<div class="notice '+(ht.type==='event'?'nwarn':'ninfo')+'" style="font-size:12px;padding:7px 10px">'+esc(ht.text)+'</div>';
-  }).join(''):'<div style="font-size:12px;color:var(--mu);padding:4px">Спокоен час. Добър момент за почивка.</div>';
+    return '<div class="notice '+(ht.type==='event'?'nwarn':'ninfo')+'" style="font-size:14px;padding:7px 10px">'+esc(ht.text)+'</div>';
+  }).join(''):'<div style="font-size:14px;color:var(--mu);padding:4px">Спокоен час. Добър момент за почивка.</div>';
 
   // Zone list
   var sorted=[...ZONES].sort(function(a,b){return(sc[b.id]||0)-(sc[a.id]||0);});
   document.getElementById('zoneList').innerHTML=sorted.slice(0,10).map(function(z){
     const score=sc[z.id]||0.3;const col=demandColor(score,z.type);
-    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--brd);font-size:12px">'+
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--brd);font-size:14px">'+
       '<span>'+z.name+'</span><span style="color:'+col.t+';font-weight:800">'+col.l+'</span></div>';
   }).join('');
 }
@@ -1168,7 +1168,7 @@ setInterval(function(){if(autoHour)updHeatmap();},60000);
 // ═══ NOTIFICATIONS ═══
 function showNotif(msg){
   const el=document.createElement('div');
-  el.style.cssText='position:fixed;top:58px;left:50%;transform:translateX(-50%);background:var(--s2);border:1px solid var(--y);border-radius:9px;padding:8px 14px;font-size:13px;font-weight:700;z-index:600;white-space:nowrap;pointer-events:none;animation:su .3s ease';
+  el.style.cssText='position:fixed;top:58px;left:50%;transform:translateX(-50%);background:var(--s2);border:1px solid var(--y);border-radius:9px;padding:8px 14px;font-size:15px;font-weight:700;z-index:600;white-space:nowrap;pointer-events:none;animation:su .3s ease';
   el.textContent=msg;document.body.appendChild(el);
   setTimeout(function(){el.remove();},2500);
 }
@@ -1178,13 +1178,13 @@ function showNotif(msg){
   <div style="display:flex;align-items:center;gap:10px;min-width:0">
     <span style="font-size:26px;flex-shrink:0">🐟</span>
     <div style="min-width:0">
-      <div style="font-size:13px;font-weight:900;color:#f0f0f0">Инсталирай приложението</div>
-      <div style="font-size:11px;color:#888;margin-top:1px">Работи офлайн · Бърз достъп</div>
+      <div style="font-size:15px;font-weight:900;color:#f0f0f0">Инсталирай приложението</div>
+      <div style="font-size:15px;color:#aaa;margin-top:1px">Работи офлайн · Бърз достъп</div>
     </div>
   </div>
   <div style="display:flex;gap:7px;flex-shrink:0">
-    <button id="pwa-dismiss" style="background:transparent;border:1px solid #333;border-radius:8px;padding:7px 12px;font-size:12px;color:#888;cursor:pointer;font-weight:700">Не сега</button>
-    <button id="pwa-install" style="background:#f5c518;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:900;color:#000;cursor:pointer">Инсталирай ↓</button>
+    <button id="pwa-dismiss" style="background:transparent;border:1px solid #333;border-radius:8px;padding:7px 12px;font-size:14px;color:#aaa;cursor:pointer;font-weight:700">Не сега</button>
+    <button id="pwa-install" style="background:#f5c518;border:none;border-radius:8px;padding:7px 14px;font-size:15px;font-weight:900;color:#000;cursor:pointer">Инсталирай ↓</button>
   </div>
 </div>
 
